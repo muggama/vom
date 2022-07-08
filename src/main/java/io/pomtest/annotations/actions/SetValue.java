@@ -1,11 +1,11 @@
 package io.pomtest.annotations.actions;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Action
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface SetValue{
+public @interface SetValue {
     String value();
 
     String path() default "";

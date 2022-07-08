@@ -6,16 +6,17 @@ import io.pomtest.annotations.actions.GetValue;
 import io.pomtest.annotations.actions.SetValue;
 import io.pomtest.core.Page;
 
+import java.util.ArrayList;
+
 public abstract class LoginPage extends Page<LoginPage> {
-
     @SetValue("4")
-    public abstract LoginPage fillUsername(String name);
+    public abstract ArrayList<String> fillUsername(String name);
 
-    @GetValue("3")
-    public abstract LoginPage getUsername(String name);
+    @GetValue(value = "3")
+    public abstract String getUsername();
 
     @Clean("2")
-    abstract LoginPage cleanUsername(String name);
+    public abstract LoginPage cleanUsername();
 
     @SetValue("1")
     public abstract LoginPage fillPassword(String password);

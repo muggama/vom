@@ -2,32 +2,27 @@ package io.pomtest.tests.core;
 
 import io.pomtest.pages.LoginPage;
 import io.pomtest.utils.Reflection;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class PageTest {
 
-    //@Test
-    public void test_structure() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    @Test
+    public void test_buddy() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        final String username = "someUsername";
-        final String password = "somePassword";
-        String className = Reflection.createProxyObject(LoginPage.class)
-                .fillUsername(username)
-                .job((it) -> {
-                    System.out.println("first job");
-                    System.out.println(it.getLocale());
-                })
-                .fillPassword(password)
-                .login()
-                .job((it) -> {
-                    System.out.println("Second job");
-                    System.out.println(it.getLocale());
-                })
-                .getClass()
-                .getSimpleName();
+        LoginPage loginPage = Reflection.createPageObject(LoginPage.class);
 
-        System.out.println(className);
+        Assert.assertEquals("Unfinished handler!!", loginPage.getUsername());
+
+        var l = loginPage.fillUsername("username");
+
+        Assert.assertEquals(0, l.size());
+        l.add("hello world");
+        Assert.assertEquals(1, l.size());
+
+        loginPage.fillPassword("password");
+
     }
 }
