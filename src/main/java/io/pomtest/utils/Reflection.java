@@ -54,7 +54,7 @@ public class Reflection {
     }
 
 
-    public static <T extends Page<T>> T createPageObject(Class<T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T extends Page<T>> T createPageObject(Class<? super T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         var map = new HashMap<Method, InvocationHandler>();
 
         Arrays.stream(pClass.getMethods()).forEach(method -> {
@@ -79,11 +79,11 @@ public class Reflection {
     }
 
 
-    public static <T> T createProxyObject(Class<T> tClass, Map<Method, ? extends InvocationHandler> map) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public static <T> T createProxyObject(Class<? super T> tClass, Map<Method, ? extends InvocationHandler> map) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         var invocationHandler = new Handler(map);
 
-        return new ByteBuddy()
+        return (T) new ByteBuddy()
                 .subclass(tClass)
                 .method(ElementMatchers.anyOf(map.keySet().toArray(new Method[0])))
                 .intercept(InvocationHandlerAdapter.of(invocationHandler))

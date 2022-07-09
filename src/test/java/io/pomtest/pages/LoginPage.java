@@ -8,7 +8,7 @@ import io.pomtest.core.Page;
 
 import java.util.ArrayList;
 
-public abstract class LoginPage extends Page<LoginPage> {
+public abstract class LoginPage extends SuperPage<LoginPage> {
     @SetValue("4")
     public abstract ArrayList<String> fillUsername(String name);
 
