@@ -12,7 +12,7 @@ public class PageTest {
     @Test
     public void test_buddy() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        LoginPage loginPage = Reflection.createPageObject(LoginPage.class);
+        var loginPage = Reflection.createPageObject(LoginPage.class);
 
         Assert.assertEquals("Unfinished handler!!", loginPage.getUsername());
 

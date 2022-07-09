@@ -54,7 +54,7 @@ public class Reflection {
     }
 
 
-    public static <T extends Page<T>> T createPageObject(Class<T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T extends Page<? super T>> T createPageObject(Class<? extends T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         var map = new HashMap<Method, InvocationHandler>();
 
         Arrays.stream(pClass.getMethods()).forEach(method -> {
