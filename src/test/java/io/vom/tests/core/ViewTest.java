@@ -1,18 +1,18 @@
-package io.pomtest.tests.core;
+package io.vom.tests.core;
 
-import io.pomtest.pages.LoginPage;
-import io.pomtest.utils.Reflection;
+import io.vom.views.LoginView;
+import io.vom.utils.Reflection;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class PageTest {
+public class ViewTest {
 
     @Test
     public void test_buddy() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        var loginPage = Reflection.createPageObject(LoginPage.class);
+        var loginPage = Reflection.createPageObject(LoginView.class);
 
         Assert.assertEquals("Unfinished handler!!", loginPage.getUsername());
 

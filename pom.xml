@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.pomtest</groupId>
-    <artifactId>pomtest</artifactId>
+    <groupId>io.vom</groupId>
+    <artifactId>vom</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>pomtest</name>
+    <name>vom</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

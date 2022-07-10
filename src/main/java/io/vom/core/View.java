@@ -1,9 +1,9 @@
-package io.pomtest.core;
+package io.vom.core;
 
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class Page<T extends Page<T>> {
+public class View<T extends View<T>> {
 
     @SuppressWarnings("unchecked")
     private final T _self = (T) this;

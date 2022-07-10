@@ -1,4 +1,4 @@
-# pomtest
-Page Object model testing Engine 
+# vom
+View Object model testing Engine 
 
 more information will be later 

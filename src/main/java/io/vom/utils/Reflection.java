@@ -1,7 +1,7 @@
-package io.pomtest.utils;
+package io.vom.utils;
 
-import io.pomtest.annotations.actions.*;
-import io.pomtest.core.Page;
+import io.vom.annotations.actions.*;
+import io.vom.core.View;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -54,7 +54,7 @@ public class Reflection {
     }
 
 
-    public static <T extends Page<? super T>> T createPageObject(Class<? extends T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T extends View<? super T>> T createPageObject(Class<? extends T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         var map = new HashMap<Method, InvocationHandler>();
 
         Arrays.stream(pClass.getMethods()).forEach(method -> {
