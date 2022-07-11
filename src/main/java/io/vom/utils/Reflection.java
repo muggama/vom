@@ -1,6 +1,7 @@
 package io.vom.utils;
 
 import io.vom.annotations.actions.*;
+import io.vom.core.Context;
 import io.vom.core.View;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
@@ -54,7 +55,7 @@ public class Reflection {
     }
 
 
-    public static <T extends View<? super T>> T createPageObject(Class<? extends T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T extends View<? super T>> T createPageObject(Context context, Class<? extends T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         var map = new HashMap<Method, InvocationHandler>();
 
         Arrays.stream(pClass.getMethods()).forEach(method -> {
@@ -63,7 +64,9 @@ public class Reflection {
                 map.put(method, handler);
             }
         });
-        return createProxyObject(pClass, map);
+        T obj = createProxyObject(pClass, map);
+        obj.prepare(context);
+        return obj;
     }
 
 
