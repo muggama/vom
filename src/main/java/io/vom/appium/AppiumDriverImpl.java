@@ -1,24 +1,22 @@
 package io.vom.appium;
 
 import io.appium.java_client.AppiumDriver;
-import io.vom.core.Context;
 import io.vom.core.Driver;
 import io.vom.core.Element;
 import io.vom.core.Selector;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AppiumDriverImpl implements Driver {
 
     AppiumDriver appiumDriver;
-    Context context;
 
-    public AppiumDriverImpl(Context context, Capabilities desiredCapabilities) {
-        this.context = context;
-        appiumDriver = new AppiumDriver(desiredCapabilities);
+    public AppiumDriverImpl(URL remoteAddress, Capabilities desiredCapabilities) {
+        appiumDriver = new AppiumDriver(remoteAddress, desiredCapabilities);
     }
 
     @Override
