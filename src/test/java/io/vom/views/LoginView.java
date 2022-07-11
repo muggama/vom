@@ -1,6 +1,6 @@
 package io.vom.views;
 
-import io.vom.annotations.actions.Clean;
+import io.vom.annotations.actions.Clear;
 import io.vom.annotations.actions.Click;
 import io.vom.annotations.actions.GetValue;
 import io.vom.annotations.actions.SetValue;
@@ -14,7 +14,7 @@ public abstract class LoginView extends SuperView<LoginView> {
     @GetValue(value = "3")
     public abstract String getUsername();
 
-    @Clean("2")
+    @Clear("2")
     public abstract LoginView cleanUsername();
 
     @SetValue("1")

@@ -41,7 +41,7 @@ public class Reflection {
             }
         });
 
-        actionHandler.put(Clean.class, (self, method, objects) -> {
+        actionHandler.put(Clear.class, (self, method, objects) -> {
             // unfinished
             if (method.getReturnType() == self.getClass()) {
                 return self;
