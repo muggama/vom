@@ -1,5 +1,8 @@
 package io.vom.core;
 
+import io.vom.utils.Reflection;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public class Context {
@@ -7,6 +10,14 @@ public class Context {
 
     public Driver getDriver() {
         return driver;
+    }
+
+    public <T extends View<T>> T loadView(Class<T> viewClass) {
+        try {
+            return Reflection.createPageObject(this, viewClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

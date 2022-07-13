@@ -1,7 +1,9 @@
 package io.vom.core;
 
-import io.vom.SelectorNotFoundException;
 import io.vom.annotations.repositories.Name;
+import io.vom.exceptions.SelectorNotFoundException;
+import io.vom.utils.FileUtil;
+import io.vom.utils.Properties;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -69,8 +71,7 @@ public class Repository {
             name = klass.getSimpleName();
         }
 
-        //დროებით
-        return new File("/home/geno/Templates/vom/", name + ".xml");
+        return new File(FileUtil.getFullPath(Properties.getInstance().getProperty("repository","repository")), name + ".xml");
     }
 
     public static List<Selector> convertXmlToListSelector(Context context, File file) {

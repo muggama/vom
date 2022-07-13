@@ -1,10 +1,10 @@
 package io.vom.utils;
 
-import io.vom.SelectorNotFoundException;
+import io.vom.exceptions.SelectorNotFoundException;
 import io.vom.annotations.actions.Clear;
 import io.vom.annotations.actions.Click;
-import io.vom.annotations.actions.GetValue;
-import io.vom.annotations.actions.SetValue;
+import io.vom.annotations.actions.GetText;
+import io.vom.annotations.actions.SetText;
 import io.vom.annotations.repositories.Name;
 import io.vom.core.Context;
 import io.vom.core.Repository;
@@ -25,8 +25,8 @@ public class Reflection {
     private static final Map<Class<? extends Annotation>, InvocationHandler> actionHandler = new HashMap<>();
 
     static {
-        actionHandler.put(GetValue.class, Reflection::invokeGetter);
-        actionHandler.put(SetValue.class, Reflection::invokeSetter);
+        actionHandler.put(GetText.class, Reflection::invokeGetter);
+        actionHandler.put(SetText.class, Reflection::invokeSetter);
         actionHandler.put(Clear.class, Reflection::invokeClearer);
         actionHandler.put(Click.class, Reflection::invokeClicker);
     }
@@ -103,7 +103,7 @@ public class Reflection {
     }
 
     private static Object invokeClearer(Object self, Method method, Object[] objects) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        SetValue annotation = method.getDeclaredAnnotation(SetValue.class);
+        SetText annotation = method.getDeclaredAnnotation(SetText.class);
         var view = (View<?>) self;
         Selector selector = Repository.findSelector(view.getContext(), view, method);
         view.findElement(selector).clear();
@@ -112,7 +112,7 @@ public class Reflection {
     }
 
     private static Object invokeSetter(Object self, Method method, Object[] objects) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        SetValue annotation = method.getDeclaredAnnotation(SetValue.class);
+        SetText annotation = method.getDeclaredAnnotation(SetText.class);
         var view = (View<?>) self;
         Selector selector = Repository.findSelector(view.getContext(), view, method);
 
@@ -122,7 +122,7 @@ public class Reflection {
         return getReturn(self, method, annotation);
     }
 
-    private static Object getReturn(Object self, Method method, SetValue annotation) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private static Object getReturn(Object self, Method method, SetText annotation) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         if (method.getReturnType().isAssignableFrom(self.getClass())) {
             return self;
         } else if (method.getReturnType() == void.class) {
