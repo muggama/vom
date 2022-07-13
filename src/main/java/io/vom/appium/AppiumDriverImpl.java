@@ -9,6 +9,7 @@ import org.openqa.selenium.Capabilities;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AppiumDriverImpl implements Driver {
@@ -33,6 +34,7 @@ public class AppiumDriverImpl implements Driver {
     }
 
     static By bySelector(Selector selector) {
+        Objects.requireNonNull(selector,"Selector must not be null");
         String value = selector.getValue();
 
         switch (selector.getType().toLowerCase()) {

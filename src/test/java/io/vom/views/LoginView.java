@@ -9,11 +9,15 @@ import io.vom.core.Selector;
 
 public abstract class LoginView extends SuperView<LoginView> {
 
+    @Name("dssdsd")
     private Selector username;
 
-    @SetValue
-    @Name("username")
-    public abstract LoginView fillUsername(String name);
+
+    public LoginView fillUsername(String name){
+        findElement(username).setText(name);
+
+        return this;
+    }
 
     @GetValue
     @Name("username")

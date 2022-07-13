@@ -1,9 +1,11 @@
 package io.vom.utils;
 
+import io.vom.SelectorNotFoundException;
 import io.vom.annotations.actions.Clear;
 import io.vom.annotations.actions.Click;
 import io.vom.annotations.actions.GetValue;
 import io.vom.annotations.actions.SetValue;
+import io.vom.annotations.repositories.Name;
 import io.vom.core.Context;
 import io.vom.core.Repository;
 import io.vom.core.Selector;
@@ -16,10 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Reflection {
 
@@ -43,8 +42,41 @@ public class Reflection {
             }
         });
         T obj = createProxyObject(pClass, map);
+        injectFields(context, obj);
         obj.prepare(context);
         return obj;
+    }
+
+    private static void injectFields(Context context, View<?> obj) {
+        Class<?> klass = obj.getClass();
+        while (klass != null) {
+            var className = klass.getSimpleName();
+            var r = Repository.findRepository(context, klass);
+            Arrays.stream(klass.getDeclaredFields())
+                    .peek(field -> field.setAccessible(true))
+                    .filter(field -> {
+                        try {
+                            return field.getType() == Selector.class && field.get(obj) == null;
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .forEach(field -> {
+                        String name = Optional.ofNullable(field.getDeclaredAnnotation(Name.class))
+                                .map(Name::value)
+                                .orElse(field.getName());
+
+                        var found = r.stream().filter(selector -> selector.getName().equals(name))
+                                .findAny()
+                                .orElseThrow(() -> new SelectorNotFoundException("Selector named: '" + name + "' was not found, Selector holder class is '"+className+"'"));
+                        try {
+                            field.set(obj, found);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            klass = klass.getSuperclass();
+        }
     }
 
 
@@ -53,10 +85,6 @@ public class Reflection {
                 .map((a) -> actionHandler.get(a.annotationType()))
                 .filter(Objects::nonNull)
                 .findAny().orElse(null);
-    }
-
-    private static boolean filterAnnotation(Annotation annotation) {
-        return actionHandler.get(annotation.annotationType()) != null;
     }
 
 
@@ -87,9 +115,6 @@ public class Reflection {
         SetValue annotation = method.getDeclaredAnnotation(SetValue.class);
         var view = (View<?>) self;
         Selector selector = Repository.findSelector(view.getContext(), view, method);
-
-        if (selector == null)
-            throw new IllegalStateException("Method: with name '" + method.getName() + "' is not declared on repository");
 
         var text = Objects.requireNonNull(objects[0], method.getName() + "argument is null").toString();
         view.findElement(selector).setText(text);
@@ -124,7 +149,7 @@ public class Reflection {
         view.findElement(selector).click();
         Class<? extends View> returnClass = (Class<? extends View>) method.getReturnType();
 
-        return createPageObject(view.getContext(),returnClass);
+        return createPageObject(view.getContext(), returnClass);
     }
 
     private static Object invokeGetter(Object self, Method method, Object[] objects) {
