@@ -9,6 +9,7 @@ public class Context {
         return driver;
     }
 
+
     public static ContextBuilder getBuilder() {
         return new ContextBuilder();
     }

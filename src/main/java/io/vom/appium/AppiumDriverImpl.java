@@ -46,4 +46,12 @@ public class AppiumDriverImpl implements Driver {
                 throw new UnsupportedOperationException("Unsupported selector type");
         }
     }
+
+    @Override
+    public String getPlatform() {
+        return appiumDriver.getCapabilities()
+                .getCapability("platformName")
+                .toString()
+                .toLowerCase();
+    }
 }

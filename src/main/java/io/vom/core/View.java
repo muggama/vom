@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class View<T extends View<T>> implements Searchable {
+public abstract class View<T extends View<T>> implements Searchable {
 
     private Context context;
     @SuppressWarnings("unchecked")

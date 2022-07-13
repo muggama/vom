@@ -4,22 +4,28 @@ import io.vom.annotations.actions.Clear;
 import io.vom.annotations.actions.Click;
 import io.vom.annotations.actions.GetValue;
 import io.vom.annotations.actions.SetValue;
-
-import java.util.ArrayList;
+import io.vom.annotations.repositories.Name;
+import io.vom.core.Selector;
 
 public abstract class LoginView extends SuperView<LoginView> {
-    @SetValue("4")
-    public abstract ArrayList<String> fillUsername(String name);
 
-    @GetValue(value = "3")
+    private Selector username;
+
+    @SetValue
+    @Name("username")
+    public abstract LoginView fillUsername(String name);
+
+    @GetValue
+    @Name("username")
     public abstract String getUsername();
 
-    @Clear("2")
+    @Clear
+    @Name("username")
     public abstract LoginView cleanUsername();
 
-    @SetValue("1")
+    @SetValue
     public abstract LoginView fillPassword(String password);
 
-    @Click("cl")
+    @Click
     public abstract MainView login();
 }

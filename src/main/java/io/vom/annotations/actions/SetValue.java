@@ -6,9 +6,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface SetValue {
-    String value();
-
-    String path() default "";
-
     Class<?> returnType() default Void.class;
 }
