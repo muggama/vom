@@ -2,9 +2,13 @@ package io.vom.tests.core;
 
 import io.vom.appium.AppiumDriverImpl;
 import io.vom.core.Context;
+import io.vom.utils.Point;
+import io.vom.utils.Size;
 import io.vom.views.LoginView;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.Duration;
 
 public class ViewTest {
 
@@ -22,6 +26,8 @@ public class ViewTest {
 
         log.cleanUsername();
 
-        log.job((it) -> Assert.assertEquals("Username", it.getUsername())).login();
+        var login = log.job((it) -> Assert.assertEquals("Username", it.getUsername()))
+                .login();
+
     }
 }

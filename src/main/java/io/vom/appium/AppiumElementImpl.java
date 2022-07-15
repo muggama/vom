@@ -3,6 +3,8 @@ package io.vom.appium;
 import io.vom.core.Driver;
 import io.vom.core.Element;
 import io.vom.core.Selector;
+import io.vom.utils.Point;
+import io.vom.utils.Size;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -24,8 +26,9 @@ public class AppiumElementImpl implements Element {
 
     @Override
     public void setText(String text) {
-        webElement.click();
+        click();
         webElement.sendKeys(text);
+        removeFocus();
     }
 
     @Override
@@ -35,12 +38,46 @@ public class AppiumElementImpl implements Element {
 
     @Override
     public void clear() {
+        click();
         webElement.clear();
+        removeFocus();
     }
 
     @Override
     public void click() {
         webElement.click();
+    }
+
+
+    @Override
+    public Size getSize() {
+        var dim = webElement.getSize();
+        return new Size(dim.getWidth(), dim.getHeight());
+    }
+
+    @Override
+    public Point getPoint() {
+        var loc = webElement.getLocation();
+        return new Point(loc.getX(), loc.getY());
+    }
+
+    @Override
+    public void removeFocus() {
+        if (!isFocused()) return;
+
+        var size = getSize();
+        var point = getPoint();
+        driver.click(point.getX() + (size.getWidth() / 2), point.getY() - 1);
+    }
+
+    @Override
+    public boolean isFocused() {
+        return Boolean.parseBoolean(getAttribute("focused"));
+    }
+
+    @Override
+    public String getAttribute(String attr) {
+        return webElement.getAttribute(attr);
     }
 
     public WebElement getAppiumElement() {

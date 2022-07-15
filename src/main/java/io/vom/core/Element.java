@@ -1,5 +1,8 @@
 package io.vom.core;
 
+import io.vom.utils.Point;
+import io.vom.utils.Size;
+
 public interface Element extends Searchable {
 
     Driver getDriver();
@@ -11,4 +14,14 @@ public interface Element extends Searchable {
     void clear();
 
     void click();
+
+    Size getSize();
+
+    Point getPoint();
+
+    void removeFocus();
+
+    boolean isFocused();
+
+    String getAttribute(String attr);
 }

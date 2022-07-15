@@ -8,8 +8,8 @@
         </selector>
         <selector>
             <name>login</name>
-            <value>(//*[@clickable='true'])[1]</value>
-            <type>xpath</type>
+            <value>io.vom:id/loginButton</value>
+            <type>id</type>
         </selector>
     </platform>
 </repository>
