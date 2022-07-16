@@ -1,4 +1,4 @@
-package io.vom.core;
+package io.vom.utils;
 
 import java.util.Objects;
 

@@ -1,0 +1,9 @@
+<repository>
+    <platform name="android">
+        <selector>
+            <name>test</name>
+            <value>a</value>
+            <type>id</type>
+        </selector>
+    </platform>
+</repository>

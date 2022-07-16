@@ -1,5 +1,7 @@
 package io.vom.core;
 
+import io.vom.utils.Selector;
+
 import java.util.List;
 
 public interface Searchable {

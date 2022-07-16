@@ -5,7 +5,7 @@ import io.vom.annotations.actions.Click;
 import io.vom.annotations.actions.GetText;
 import io.vom.annotations.actions.SetText;
 import io.vom.annotations.repositories.Name;
-import io.vom.core.Selector;
+import io.vom.utils.Selector;
 
 public abstract class LoginView extends SuperView<LoginView> {
 

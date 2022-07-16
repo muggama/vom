@@ -6,9 +6,9 @@ import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.vom.core.Driver;
 import io.vom.core.Element;
-import io.vom.core.Selector;
+import io.vom.utils.Selector;
 import io.vom.exceptions.PlatformNotFoundException;
-import io.vom.utils.FileUtil;
+import io.vom.utils.FileUtils;
 import io.vom.utils.Point;
 import io.vom.utils.Properties;
 import io.vom.utils.Size;
@@ -43,7 +43,7 @@ public class AppiumDriverImpl implements Driver {
 
         try {
             var url = new URL(prop.getProperty("appium_url"));
-            var reader = new FileReader(FileUtil.getFullPath(prop.getProperty("appium_caps_json_file")));
+            var reader = new FileReader(FileUtils.getFullPath(prop.getProperty("appium_caps_json_file")));
 
             Gson gson = new Gson();
             Type type = new TypeToken<List<Map<String, Object>>>() {

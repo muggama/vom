@@ -1,6 +1,7 @@
 package io.vom.core;
 
 import io.vom.utils.Point;
+import io.vom.utils.Selector;
 import io.vom.utils.Size;
 
 import java.time.Duration;

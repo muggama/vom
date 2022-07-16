@@ -1,12 +1,25 @@
 package io.vom.core;
 
-import io.vom.utils.Reflection;
+import io.vom.utils.ReflectionUtils;
+import io.vom.utils.Selector;
+import io.vom.utils.SelectorUtils;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.Objects;
 
 public class Context {
     protected Driver driver;
+
+    private Map<String, Selector> commonSelectors;
+
+
+    public Selector getCommonSelector(String name) {
+        if (commonSelectors == null) {
+            commonSelectors = SelectorUtils.loadCommonSelectors(this);
+        }
+
+        return commonSelectors.get(name);
+    }
 
     public Driver getDriver() {
         return driver;
@@ -14,7 +27,7 @@ public class Context {
 
     public <T extends View<T>> T loadView(Class<T> viewClass) {
         try {
-            return Reflection.createPageObject(this, viewClass);
+            return ReflectionUtils.createPageObject(this, viewClass);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
