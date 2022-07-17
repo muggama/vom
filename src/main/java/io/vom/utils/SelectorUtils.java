@@ -7,8 +7,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,24 +18,24 @@ public class SelectorUtils {
     private static final Map<Class<?>, Map<String, Selector>> selectorsMemory = new HashMap<>();
 
     public static Map<String, Selector> loadCommonSelectors(Context context) {
-        String path = Objects.requireNonNull(SelectorUtils.class.getResource("/common_selectors.xml")
-                , "system common selectors file not found").getPath();
-        System.out.println(path);
-        var file = new File(path);
-        var selectors = Optional.ofNullable(convertXmlToListSelector(context,file))
-                .orElse(new HashMap<>());
+        try (InputStream inputStream = SelectorUtils.class.getResourceAsStream("/common_selectors.xml")) {
+            var selectors = Optional.ofNullable(convertXmlToListSelector(context, inputStream, "common_selectors.xml"))
+                    .orElse(new HashMap<>());
 
-        file = new File(FileUtils.getFullPath(Properties.getInstance().getProperty("repository_dir","repository"))
-                ,Properties.getInstance().getProperty("common_selectors_file_name","common_selectors") +".xml");
+            File file = new File(FileUtils.getFullPath(Properties.getInstance().getProperty("repository_dir", "repository"))
+                    , Properties.getInstance().getProperty("common_selectors_file_name", "common_selectors") + ".xml");
 
-        if (file.isFile()){
-           var userSelectors = convertXmlToListSelector(context, file);
-           if (userSelectors != null) {
-               selectors.putAll(userSelectors);
-           }
-       }
+            if (file.isFile()) {
+                var userSelectors = convertXmlToListSelector(context, file);
+                if (userSelectors != null) {
+                    selectors.putAll(userSelectors);
+                }
+            }
 
-        return selectors;
+            return selectors;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Map<String, Selector> findSelectors(Context context, Class<?> klass) {
@@ -94,17 +93,25 @@ public class SelectorUtils {
     }
 
     public static Map<String, Selector> convertXmlToListSelector(Context context, File file) {
+        try {
+            return convertXmlToListSelector(context, new FileInputStream(file), file.getName());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Map<String, Selector> convertXmlToListSelector(Context context, InputStream inputStream, String fileName) {
         SAXBuilder sax = new SAXBuilder();
 
         try {
-            var document = sax.build(file);
+            var document = sax.build(inputStream);
             var map = new HashMap<String, Selector>();
 
             Element rootElement = document.getRootElement();
             rootElement.getChildren("platform")
                     .stream()
                     .filter((element -> Objects.equals(element.getAttribute("name", null).getValue(), context.getDriver().getPlatform())))
-                    .findAny().orElseThrow(() -> new IllegalStateException("Platform '" + context.getDriver().getPlatform() + "' was not found on this file: " + file.getName()))
+                    .findAny().orElseThrow(() -> new IllegalStateException("Platform '" + context.getDriver().getPlatform() + "' was not found on this file: " + fileName))
                     .getChildren("selector")
                     .forEach(element -> {
                         var selector = Selector.from(element.getChild("name").getText()
