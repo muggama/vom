@@ -21,7 +21,7 @@ public class SelectorUtils {
     public static Map<String, Selector> loadCommonSelectors(Context context) {
         String path = Objects.requireNonNull(SelectorUtils.class.getResource("/common_selectors.xml")
                 , "system common selectors file not found").getFile();
-
+        System.out.println(path);
         var file = new File(path);
         var selectors = Optional.ofNullable(convertXmlToListSelector(context,file))
                 .orElse(new HashMap<>());

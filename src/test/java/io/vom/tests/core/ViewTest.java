@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ViewTest {
 
 
-    @Test
+   // @Test
     public void common_selector_test(){
         var s = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
@@ -20,7 +20,7 @@ public class ViewTest {
         Assert.assertEquals("xpath",s.getType());
     }
 
-    @Test
+    //@Test
     public void context_builder() {
         Context context = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
