@@ -8,6 +8,8 @@ public interface Searchable {
 
     Element findElement(Selector selector);
 
+    Element findNullableElement(Selector selector);
+
     List<Element> findElements(Selector selector);
 
 }

@@ -33,6 +33,19 @@ public class Selector {
         return s;
     }
 
+    public static Selector from(String name,String type,String value){
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(value);
+
+        var s = new Selector();
+        s.name = name;
+        s.type = type;
+        s.value = value;
+
+        return s;
+    }
+
     public static Selector from(String name,String type,String value,String platform){
         Objects.requireNonNull(name);
         Objects.requireNonNull(type);

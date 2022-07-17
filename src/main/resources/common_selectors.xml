@@ -5,5 +5,15 @@
             <value>a</value>
             <type>id</type>
         </selector>
+        <selector>
+            <name>scroll_container</name>
+            <value>//android.widget.ScrollView[1]</value>
+            <type>xpath</type>
+        </selector>
+        <selector>
+            <name>present_text</name>
+            <value>//*[@text='${text}']</value>
+            <type>xpath</type>
+        </selector>
     </platform>
 </repository>

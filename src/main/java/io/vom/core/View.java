@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public abstract class View<T extends View<T>> implements Searchable {
+public class View<T extends View<T>> implements Searchable {
 
     private Context context;
     private Driver driver;
@@ -53,6 +53,9 @@ public abstract class View<T extends View<T>> implements Searchable {
         return click(point.getX(), point.getY());
     }
 
+    public boolean isPresentText(String text){
+        return driver.isPresentText(text);
+    }
     public <V extends View<V>> V click(Point point, Class<V> vClass) {
         click(point);
 
@@ -71,6 +74,11 @@ public abstract class View<T extends View<T>> implements Searchable {
     @Override
     public Element findElement(Selector selector) {
         return context.getDriver().findElement(selector);
+    }
+
+    @Override
+    public Element findNullableElement(Selector selector) {
+        return context.getDriver().findNullableElement(selector);
     }
 
     @Override

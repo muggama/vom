@@ -53,6 +53,7 @@ public class Context {
         public Context build() {
             Objects.requireNonNull(driver, "Driver is null, you should set Driver to start project");
             context.driver = driver;
+            driver.prepare(context);
 
             return context;
         }

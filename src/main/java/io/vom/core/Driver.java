@@ -1,11 +1,13 @@
 package io.vom.core;
 
 import io.vom.utils.Point;
+import io.vom.utils.Selector;
 import io.vom.utils.Size;
 
 import java.time.Duration;
 
 public interface Driver extends Searchable {
+    void prepare(Context context);
     String getPlatform();
 
     void slipFinger(Point from, Point to, Duration duration);
@@ -20,6 +22,8 @@ public interface Driver extends Searchable {
 
     void scrollDown(Duration duration, int length);
 
+    void scrollDown(Duration duration, int length, Selector scrollContainer);
+
     void scrollDownTo(String text);
 
     void scrollDownTo(String text, Duration duration, int length);
@@ -27,6 +31,8 @@ public interface Driver extends Searchable {
     void scrollUp();
 
     void scrollUp(Duration duration, int length);
+
+    void scrollUp(Duration duration, int length,Selector scrollContainer);
 
     void scrollUpTo(String text);
 
@@ -36,6 +42,8 @@ public interface Driver extends Searchable {
 
     void scrollLeft(Duration duration, int length);
 
+    void scrollLeft(Duration duration, int length, Selector scrollContainer);
+
     void scrollLeftTo(String text);
 
     void scrollLeftTo(String text, Duration duration, int length);
@@ -43,6 +51,8 @@ public interface Driver extends Searchable {
     void scrollRight();
 
     void scrollRight(Duration duration, int length);
+
+    void scrollRight(Duration duration, int length,Selector scrollContainer);
 
     void scrollRightTo(String text);
 
@@ -55,4 +65,6 @@ public interface Driver extends Searchable {
     void scrollLeftToStart();
 
     void scrollRightToEnd();
+
+    boolean isPresentText(String text);
 }

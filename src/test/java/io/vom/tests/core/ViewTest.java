@@ -31,10 +31,17 @@ public class ViewTest {
         var username = "hello vom";
         Assert.assertEquals(username, log.fillUsername(username).getUsername());
 
-        log.cleanUsername();
+        log.cleanUsername()
+                        .job((it) ->{
+                            Assert.assertTrue(it.isPresentText("Welcome to Digital bank"));
+                        });
 
-        var login = log.job((it) -> Assert.assertEquals("Username", it.getUsername()))
-                .login();
-
+        log.job((it) -> Assert.assertEquals("Username", it.getUsername()))
+                .login()
+                .scrollDown()
+                .scrollDown()
+                .scrollDown()
+                .scrollUp()
+                .scrollUp();
     }
 }

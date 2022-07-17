@@ -2,6 +2,7 @@ package io.vom.appium;
 
 import io.vom.core.Driver;
 import io.vom.core.Element;
+import io.vom.exceptions.ElementNotFoundException;
 import io.vom.utils.Selector;
 import io.vom.utils.Point;
 import io.vom.utils.Properties;
@@ -10,6 +11,7 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class AppiumElementImpl implements Element {
@@ -90,6 +92,17 @@ public class AppiumElementImpl implements Element {
     }
 
     @Override
+    public Point getCenterPoint() {
+        var size = getSize();
+        var point = getPoint();
+
+        int x = size.getWidth() / 2 + point.getX();
+        int y = size.getHeight() / 2 + point.getY();
+
+        return new Point(x, y);
+    }
+
+    @Override
     public void drag(Point point, Duration duration) {
         var size = getSize();
         var currentPoint = this.getPoint();
@@ -104,7 +117,24 @@ public class AppiumElementImpl implements Element {
 
     @Override
     public Element findElement(Selector selector) {
-        return new AppiumElementImpl(driver, webElement.findElement(AppiumDriverImpl.bySelector(selector)));
+        try{
+            return new AppiumElementImpl(driver, webElement.findElement(AppiumDriverImpl.bySelector(selector)));
+        }catch (NoSuchElementException e){
+            var exception = new ElementNotFoundException("Element was not found by this selector:" +
+                    " name='"+selector.getName()+"' type='"+selector.getType()+"' value='"+selector.getValue()+"'");
+            exception.addSuppressed(e);
+
+            throw exception;
+        }
+    }
+
+    @Override
+    public Element findNullableElement(Selector selector) {
+        try{
+            return findElement(selector);
+        }catch (ElementNotFoundException e){
+            return null;
+        }
     }
 
     @Override

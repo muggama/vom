@@ -30,4 +30,6 @@ public interface Element extends Searchable {
     void drag(Point point, Duration duration);
 
     void drag(Point point);
+
+    Point getCenterPoint();
 }
