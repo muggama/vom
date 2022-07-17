@@ -67,4 +67,6 @@ public interface Driver extends Searchable {
     void scrollRightToEnd();
 
     boolean isPresentText(String text);
+
+    String  getPageSource();
 }

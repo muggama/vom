@@ -53,9 +53,10 @@ public class View<T extends View<T>> implements Searchable {
         return click(point.getX(), point.getY());
     }
 
-    public boolean isPresentText(String text){
+    public boolean isPresentText(String text) {
         return driver.isPresentText(text);
     }
+
     public <V extends View<V>> V click(Point point, Class<V> vClass) {
         click(point);
 
@@ -209,5 +210,9 @@ public class View<T extends View<T>> implements Searchable {
         driver.scrollRightToEnd();
 
         return _self;
+    }
+
+    public String getPageSource() {
+        return driver.getPageSource();
     }
 }

@@ -18,7 +18,7 @@ public class SelectorUtils {
 
     public static Map<String, Selector> loadCommonSelectors(Context context) {
         try (InputStream inputStream = SelectorUtils.class.getResourceAsStream("/common_selectors.xml")) {
-            var selectors = Optional.ofNullable(convertXmlToListSelector(context, inputStream, "common_selectors.xml"))
+            var selectors = Optional.of(convertXmlToListSelector(context, inputStream, "common_selectors.xml"))
                     .orElse(new HashMap<>());
 
             File file = new File(FileUtils.getFullPath(Properties.getInstance().getProperty("repository_dir", "repository"))

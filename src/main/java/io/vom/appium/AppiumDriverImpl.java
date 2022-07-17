@@ -1,5 +1,6 @@
 package io.vom.appium;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.appium.java_client.AppiumBy;
@@ -364,7 +365,11 @@ public class AppiumDriverImpl implements Driver {
         map.put("text",text);
         var fixed = StrSubstitutor.replace(selector.getValue(),map);
         var e = findNullableElement(Selector.from(selector.getName(),selector.getType(),fixed));
-
         return  e != null;
+    }
+
+    @Override
+    public String getPageSource() {
+        return appiumDriver.getPageSource();
     }
 }

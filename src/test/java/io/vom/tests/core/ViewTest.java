@@ -20,28 +20,11 @@ public class ViewTest {
         Assert.assertEquals("xpath",s.getType());
     }
 
-    //@Test
-    public void context_builder() {
+    @Test
+    public void context_builder() throws InterruptedException {
         Context context = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
                 .build();
-
-        var log = context.loadView(LoginView.class);
-
-        var username = "hello vom";
-        Assert.assertEquals(username, log.fillUsername(username).getUsername());
-
-        log.cleanUsername()
-                        .job((it) ->{
-                            Assert.assertTrue(it.isPresentText("Welcome to Digital bank"));
-                        });
-
-        log.job((it) -> Assert.assertEquals("Username", it.getUsername()))
-                .login()
-                .scrollDown()
-                .scrollDown()
-                .scrollDown()
-                .scrollUp()
-                .scrollUp();
+        System.out.println(context.getDriver().getPageSource());
     }
 }
