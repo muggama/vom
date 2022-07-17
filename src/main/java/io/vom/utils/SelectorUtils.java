@@ -4,7 +4,6 @@ import io.vom.annotations.repositories.Name;
 import io.vom.core.Context;
 import io.vom.exceptions.SelectorNotFoundException;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import java.io.*;
@@ -96,7 +95,7 @@ public class SelectorUtils {
         try {
             return convertXmlToListSelector(context, new FileInputStream(file), file.getName());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 
@@ -122,9 +121,7 @@ public class SelectorUtils {
                         map.put(selector.getName(), selector);
                     });
             return map;
-        } catch (IOException e) {
-            return null;
-        } catch (JDOMException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
