@@ -1,6 +1,5 @@
 package io.vom.appium;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.appium.java_client.AppiumBy;
@@ -9,9 +8,9 @@ import io.vom.core.Context;
 import io.vom.core.Driver;
 import io.vom.core.Element;
 import io.vom.exceptions.ElementNotFoundException;
+import io.vom.exceptions.InfinityLoopException;
 import io.vom.exceptions.PlatformNotFoundException;
 import io.vom.utils.*;
-import io.vom.utils.Properties;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -82,13 +81,13 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public Element findElement(Selector selector) {
-        try{
+        try {
             var ae = appiumDriver.findElement(bySelector(selector));
 
-            return new AppiumElementImpl(this,ae);
-        }catch (NoSuchElementException e){
-            var exception = new  ElementNotFoundException("Element was not found by this selector:" +
-                    " name='"+selector.getName()+"' type='"+selector.getType()+"' value='"+selector.getValue()+"'");
+            return new AppiumElementImpl(this, ae);
+        } catch (NoSuchElementException e) {
+            var exception = new ElementNotFoundException("Element was not found by this selector:" +
+                    " name='" + selector.getName() + "' type='" + selector.getType() + "' value='" + selector.getValue() + "'");
             exception.addSuppressed(e);
 
             throw exception;
@@ -97,9 +96,9 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public Element findNullableElement(Selector selector) {
-        try{
+        try {
             return findElement(selector);
-        }catch (ElementNotFoundException e){
+        } catch (ElementNotFoundException e) {
             return null;
         }
     }
@@ -259,7 +258,25 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollDownTo(String text, Duration duration, int length) {
+        scrollDownTo(text, duration, length, scrollContainer);
+    }
 
+    @Override
+    public void scrollDownTo(String text, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(text, () -> scrollDown(duration, length, scrollContainer));
+    }
+
+    private void scrollTo(String text, Runnable runnable) {
+        var limit = 50;
+        while (!isPresentText(text)) {
+
+            runnable.run();
+
+            limit--;
+            if (limit == 0) {
+                throw new InfinityLoopException("infinite scrolling, max scroll limit is 50");
+            }
+        }
     }
 
     @Override
@@ -284,7 +301,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollUpTo(String text, Duration duration, int length) {
+        scrollUpTo(text, duration, length, scrollContainer);
+    }
 
+    @Override
+    public void scrollUpTo(String text, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(text, () -> scrollUp(duration, length, scrollContainer));
     }
 
     @Override
@@ -309,7 +331,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollLeftTo(String text, Duration duration, int length) {
+        scrollLeftTo(text, duration, length, scrollContainer);
+    }
 
+    @Override
+    public void scrollLeftTo(String text, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(text, () -> scrollLeft(duration, length, scrollContainer));
     }
 
     @Override
@@ -334,7 +361,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollRightTo(String text, Duration duration, int length) {
+        scrollRightTo(text, duration, length, scrollContainer);
+    }
 
+    @Override
+    public void scrollRightTo(String text, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(text, () -> scrollRight(duration, length, scrollContainer));
     }
 
     @Override
@@ -359,13 +391,13 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public boolean isPresentText(String text) {
-        Selector selector =  Objects.requireNonNull(context.getCommonSelector("present_text"),"present text selector ('present_text') was not found in neither resource folder nor repository");
+        Selector selector = Objects.requireNonNull(context.getCommonSelector("present_text"), "present text selector ('present_text') was not found in neither resource folder nor repository");
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("text",text);
-        var fixed = StrSubstitutor.replace(selector.getValue(),map);
-        var e = findNullableElement(Selector.from(selector.getName(),selector.getType(),fixed));
-        return  e != null;
+        map.put("text", text);
+        var fixed = StrSubstitutor.replace(selector.getValue(), map);
+        var e = findNullableElement(Selector.from(selector.getName(), selector.getType(), fixed));
+        return e != null;
     }
 
     @Override

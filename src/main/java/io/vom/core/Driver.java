@@ -8,6 +8,7 @@ import java.time.Duration;
 
 public interface Driver extends Searchable {
     void prepare(Context context);
+
     String getPlatform();
 
     void slipFinger(Point from, Point to, Duration duration);
@@ -28,15 +29,19 @@ public interface Driver extends Searchable {
 
     void scrollDownTo(String text, Duration duration, int length);
 
+    void scrollDownTo(String text, Duration duration, int length, Selector scrollContainer);
+
     void scrollUp();
 
     void scrollUp(Duration duration, int length);
 
-    void scrollUp(Duration duration, int length,Selector scrollContainer);
+    void scrollUp(Duration duration, int length, Selector scrollContainer);
 
     void scrollUpTo(String text);
 
     void scrollUpTo(String text, Duration duration, int length);
+
+    void scrollUpTo(String text, Duration duration, int length, Selector selector);
 
     void scrollLeft();
 
@@ -48,15 +53,19 @@ public interface Driver extends Searchable {
 
     void scrollLeftTo(String text, Duration duration, int length);
 
+    void scrollLeftTo(String text, Duration duration, int length, Selector scrollContainer);
+
     void scrollRight();
 
     void scrollRight(Duration duration, int length);
 
-    void scrollRight(Duration duration, int length,Selector scrollContainer);
+    void scrollRight(Duration duration, int length, Selector scrollContainer);
 
     void scrollRightTo(String text);
 
     void scrollRightTo(String text, Duration duration, int length);
+
+    void scrollRightTo(String text, Duration duration, int length, Selector scrollContainer);
 
     void scrollDownToEnd();
 
@@ -68,5 +77,5 @@ public interface Driver extends Searchable {
 
     boolean isPresentText(String text);
 
-    String  getPageSource();
+    String getPageSource();
 }
