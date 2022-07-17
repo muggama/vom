@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ViewTest {
 
 
-   // @Test
+    @Test
     public void common_selector_test(){
         var s = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
