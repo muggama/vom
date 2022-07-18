@@ -1,9 +1,10 @@
 package io.vom.views;
 
-import io.vom.core.Element;
+import io.vom.annotations.actions.Click;
 import io.vom.core.View;
-import io.vom.utils.Selector;
 
-public class MainView extends View<MainView> {
+abstract public class MainView extends View<MainView> {
 
+    @Click
+    public abstract SuperView<LoginView> clickButton();
 }

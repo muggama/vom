@@ -7,7 +7,7 @@
         </selector>
         <selector>
             <name>scroll_container</name>
-            <value>//android.widget.ScrollView[1]</value>
+            <value>(//*[(@class='android.widget.ListView') or (@class='android.widget.ScrollView')])[1]</value>
             <type>xpath</type>
         </selector>
         <selector>

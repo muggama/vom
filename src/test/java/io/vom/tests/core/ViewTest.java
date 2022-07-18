@@ -25,6 +25,9 @@ public class ViewTest {
         Context context = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
                 .build();
-        System.out.println(context.getDriver().getPageSource());
+
+    /*    context.loadView(LoginView.class)
+                .login().clickButton()
+                .scrollDownTo("ლიმონი");*/
     }
 }
