@@ -11,6 +11,7 @@ import io.vom.exceptions.ElementNotFoundException;
 import io.vom.exceptions.InfinityLoopException;
 import io.vom.exceptions.PlatformNotFoundException;
 import io.vom.utils.*;
+import io.vom.utils.Properties;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -24,10 +25,7 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AppiumDriverImpl implements Driver {
@@ -372,22 +370,31 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollDownToEnd() {
-
+        scrollToEdge(this::scrollDown);
     }
 
     @Override
     public void scrollUpToStart() {
-
+        scrollToEdge(this::scrollUp);
     }
 
     @Override
     public void scrollLeftToStart() {
-
+        scrollToEdge(this::scrollLeft);
     }
 
     @Override
     public void scrollRightToEnd() {
+        scrollToEdge(this::scrollRight);
+    }
 
+    private void scrollToEdge(Runnable runnable) {
+        byte[] screenshot;
+
+        do {
+            screenshot = findElement(scrollContainer).takeScreenshot();
+            runnable.run();
+        } while (!Arrays.equals(screenshot, findElement(scrollContainer).takeScreenshot()));
     }
 
     @Override

@@ -26,10 +26,13 @@ public class ViewTest {
                 .setDriver(new AppiumDriverImpl())
                 .build();
 
-       var r = context.loadView(LoginView.class)
+        context.loadView(LoginView.class)
                 .login()
-                .takeScreenshot();
+                .clickButton()
+                .scrollDownToEnd()
+                .scrollUpToStart()
+                .scrollDownToEnd()
+                .scrollUpToStart();
 
-       Assert.assertNotNull(r);
     }
 }
