@@ -7,6 +7,7 @@ import io.vom.utils.Selector;
 import io.vom.utils.Point;
 import io.vom.utils.Properties;
 import io.vom.utils.Size;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
@@ -100,6 +101,11 @@ public class AppiumElementImpl implements Element {
         int y = size.getHeight() / 2 + point.getY();
 
         return new Point(x, y);
+    }
+
+    @Override
+    public byte[] takeScreenshot() {
+        return webElement.getScreenshotAs(OutputType.BYTES);
     }
 
     @Override

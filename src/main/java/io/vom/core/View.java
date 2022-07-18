@@ -106,6 +106,22 @@ public class View<T extends View<T>> implements Searchable {
         return _self;
     }
 
+    public byte[] takeScreenshot() {
+        return driver.takeScreenshot();
+    }
+
+    public void close() {
+        driver.close();
+    }
+
+    public void quit() {
+        driver.quit();
+    }
+
+    public void back() {
+        driver.back();
+    }
+
 
     public T scrollDownTo(String text, Duration duration, int length) {
         driver.scrollDownTo(text, duration, length);
@@ -141,6 +157,16 @@ public class View<T extends View<T>> implements Searchable {
 
     public T scrollLeft() {
         driver.scrollLeft();
+
+        return _self;
+    }
+
+    public T delay(int second) {
+        try {
+            Thread.sleep(second * 1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return _self;
     }

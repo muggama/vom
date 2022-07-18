@@ -10,24 +10,26 @@ public class ViewTest {
 
 
     @Test
-    public void common_selector_test(){
+    public void common_selector_test() {
         var s = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
                 .build()
                 .getCommonSelector("test");
 
-        Assert.assertEquals("b",s.getValue());
-        Assert.assertEquals("xpath",s.getType());
+        Assert.assertEquals("b", s.getValue());
+        Assert.assertEquals("xpath", s.getType());
     }
 
     @Test
-    public void context_builder() throws InterruptedException {
+    public void context_builder() {
         Context context = Context.getBuilder()
                 .setDriver(new AppiumDriverImpl())
                 .build();
 
-    /*    context.loadView(LoginView.class)
-                .login().clickButton()
-                .scrollDownTo("ლიმონი");*/
+       var r = context.loadView(LoginView.class)
+                .login()
+                .takeScreenshot();
+
+       Assert.assertNotNull(r);
     }
 }

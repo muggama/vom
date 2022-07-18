@@ -78,4 +78,12 @@ public interface Driver extends Searchable {
     boolean isPresentText(String text);
 
     String getPageSource();
+
+    byte[] takeScreenshot();
+
+    void back();
+
+    void quit();
+
+    void close();
 }

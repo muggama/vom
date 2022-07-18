@@ -15,6 +15,7 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -403,5 +404,25 @@ public class AppiumDriverImpl implements Driver {
     @Override
     public String getPageSource() {
         return appiumDriver.getPageSource();
+    }
+
+    @Override
+    public byte[] takeScreenshot() {
+        return appiumDriver.getScreenshotAs(OutputType.BYTES);
+    }
+
+    @Override
+    public void back() {
+        appiumDriver.navigate().back();
+    }
+
+    @Override
+    public void quit() {
+        appiumDriver.quit();
+    }
+
+    @Override
+    public void close() {
+        appiumDriver.close();
     }
 }

@@ -32,4 +32,6 @@ public interface Element extends Searchable {
     void drag(Point point);
 
     Point getCenterPoint();
+
+    byte[] takeScreenshot();
 }

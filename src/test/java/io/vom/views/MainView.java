@@ -7,4 +7,5 @@ abstract public class MainView extends View<MainView> {
 
     @Click
     public abstract SuperView<LoginView> clickButton();
+
 }
