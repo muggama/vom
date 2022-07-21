@@ -11,6 +11,7 @@ import io.vom.core.View;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
 import net.bytebuddy.matcher.ElementMatchers;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -30,7 +31,7 @@ public class ReflectionUtils {
     }
 
 
-    public static <T extends View<T>> T createPageObject(Context context, Class<T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+    public static <T extends View<T>> T createPageObject(@NonNull Context context,@NonNull Class<T> pClass) throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         var map = new HashMap<Method, InvocationHandler>();
 
         Arrays.stream(pClass.getMethods()).forEach(method -> {
@@ -45,7 +46,7 @@ public class ReflectionUtils {
         return obj;
     }
 
-    private static void injectFields(Context context, View<?> obj) {
+    private static void injectFields(@NonNull Context context,@NonNull View<?> obj) {
         Class<?> klass = obj.getClass();
         while (klass != null) {
             var className = klass.getSimpleName();
@@ -81,7 +82,7 @@ public class ReflectionUtils {
     }
 
 
-    private static InvocationHandler findHandler(Method method) {
+    private static InvocationHandler findHandler(@NonNull Method method) {
         return Arrays.stream(method.getDeclaredAnnotations())
                 .map((a) -> actionHandler.get(a.annotationType()))
                 .filter(Objects::nonNull)

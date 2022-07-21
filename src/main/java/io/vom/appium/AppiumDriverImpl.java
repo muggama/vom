@@ -28,15 +28,15 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static io.vom.utils.Properties.DEFAULT_SCROLL_DURATION;
+import static io.vom.utils.Properties.DEFAULT_SCROLL_LENGTH;
+
 public class AppiumDriverImpl implements Driver {
 
     AppiumDriver appiumDriver;
     private Context context;
 
     private Selector scrollContainer;
-
-    private final Duration scrollDuration = Duration.ofMillis(Integer.parseInt(Properties.getInstance().getProperty("scroll_default_duration_in_millis", "100")));
-    private final int scrollLength = Integer.parseInt(Properties.getInstance().getProperty("scroll_length", "300"));
 
     @Override
     public void prepare(Context context) {
@@ -186,7 +186,7 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollDown() {
-        scrollDown(scrollDuration, scrollLength);
+        scrollDown(DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -197,62 +197,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollDown(Duration duration, int length, Selector scrollContainer) {
-        scroll(ScrollDirection.DOWN, duration, length, scrollContainer);
-    }
-
-    private enum ScrollDirection {
-        UP, DOWN, LEFT, RIGHT
-    }
-
-    private void scroll(ScrollDirection direction, Duration duration, int length, Selector scrollContainer) {
-        var elements = Objects.requireNonNull(findElement(scrollContainer).findElements(Selector.from("xpath", "./*"))
-                , "it seems that the given view is not scrollable or selector 'scroll_container' does not works in this case");
-
-        if (elements.size() == 0) return;
-
-        int target = elements.size() / 2;
-
-        var element = elements.get(target);
-
-        var from = element.getCenterPoint();
-
-        Point to = null;
-
-        switch (direction) {
-            case UP:
-                from.move(0, -(element.getSize().getHeight() / 2 - 1));
-                to = from.clone()
-                        .move(0, length);
-                break;
-            case DOWN:
-                from.move(0, element.getSize().getHeight() / 2 - 1);
-                to = from.clone()
-                        .move(0, -length);
-                break;
-            case LEFT:
-                from.move(-(element.getSize().getHeight() / 2 - 1), 0);
-                to = from.clone()
-                        .move(length, 0);
-                break;
-            case RIGHT:
-                from.move(element.getSize().getHeight() / 2 - 1, 0);
-                to = from.clone()
-                        .move(-length, 0);
-                break;
-        }
-
-        slipFinger(from, to, duration);
-
-        try {
-            Thread.sleep(length);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        VomUtils.scroll(this, ScrollDirection.DOWN, duration, length, scrollContainer);
     }
 
     @Override
     public void scrollDownTo(String text) {
-        scrollDownTo(text, scrollDuration, scrollLength);
+        scrollDownTo(text, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -280,7 +230,7 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollUp() {
-        scrollUp(scrollDuration, scrollLength);
+        scrollUp(DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -290,12 +240,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollUp(Duration duration, int length, Selector scrollContainer) {
-        scroll(ScrollDirection.UP, duration, length, scrollContainer);
+        VomUtils.scroll(this, ScrollDirection.UP, duration, length, scrollContainer);
     }
 
     @Override
     public void scrollUpTo(String text) {
-        scrollUpTo(text, scrollDuration, scrollLength);
+        scrollUpTo(text, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -310,7 +260,7 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollLeft() {
-        scrollLeft(scrollDuration, scrollLength);
+        scrollLeft(DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -320,12 +270,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollLeft(Duration duration, int length, Selector scrollContainer) {
-        scroll(ScrollDirection.LEFT, duration, length, scrollContainer);
+        VomUtils.scroll(this, ScrollDirection.LEFT, duration, length, scrollContainer);
     }
 
     @Override
     public void scrollLeftTo(String text) {
-        scrollLeftTo(text, scrollDuration, scrollLength);
+        scrollLeftTo(text, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -340,7 +290,7 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollRight() {
-        scrollRight(scrollDuration, scrollLength);
+        scrollRight(DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -350,12 +300,12 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public void scrollRight(Duration duration, int length, Selector scrollContainer) {
-        scroll(ScrollDirection.RIGHT, duration, length, scrollContainer);
+        VomUtils.scroll(this, ScrollDirection.RIGHT, duration, length, scrollContainer);
     }
 
     @Override
     public void scrollRightTo(String text) {
-        scrollRightTo(text, scrollDuration, scrollLength);
+        scrollRightTo(text, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
     }
 
     @Override
@@ -399,7 +349,8 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public boolean isPresentText(String text) {
-        Selector selector = Objects.requireNonNull(context.getCommonSelector("present_text"), "present text selector ('present_text') was not found in neither resource folder nor repository");
+        Selector selector = Objects.requireNonNull(context.getCommonSelector("present_text")
+                , "present text selector ('present_text') was not found in neither resource folder nor repository");
 
         HashMap<String, String> map = new HashMap<>();
         map.put("text", text);

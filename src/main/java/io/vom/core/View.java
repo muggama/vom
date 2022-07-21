@@ -3,6 +3,7 @@ package io.vom.core;
 import io.vom.utils.Point;
 import io.vom.utils.Selector;
 import io.vom.utils.Size;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.time.Duration;
 import java.util.List;
@@ -118,8 +119,15 @@ public class View<T extends View<T>> implements Searchable {
         driver.quit();
     }
 
-    public void back() {
+    public <P extends View<P>> P back(@NonNull Class<P> klass) {
         driver.back();
+        return getContext().loadView(klass);
+    }
+
+    public View<?> back(){
+        driver.back();
+
+        return _self;
     }
 
 

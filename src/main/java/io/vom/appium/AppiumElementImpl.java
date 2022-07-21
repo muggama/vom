@@ -7,6 +7,7 @@ import io.vom.utils.Selector;
 import io.vom.utils.Point;
 import io.vom.utils.Properties;
 import io.vom.utils.Size;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 
@@ -109,7 +110,7 @@ public class AppiumElementImpl implements Element {
     }
 
     @Override
-    public void drag(Point point, Duration duration) {
+    public void drag(@NonNull Point point,@NonNull Duration duration) {
         var size = getSize();
         var currentPoint = this.getPoint();
         var centerPoint = new Point(currentPoint.getX() + size.getWidth() / 2, currentPoint.getY() + size.getHeight() / 2);
@@ -122,7 +123,7 @@ public class AppiumElementImpl implements Element {
     }
 
     @Override
-    public Element findElement(Selector selector) {
+    public Element findElement(@NonNull Selector selector) {
         try{
             return new AppiumElementImpl(driver, webElement.findElement(AppiumDriverImpl.bySelector(selector)));
         }catch (NoSuchElementException e){
@@ -135,7 +136,7 @@ public class AppiumElementImpl implements Element {
     }
 
     @Override
-    public Element findNullableElement(Selector selector) {
+    public Element findNullableElement(@NonNull Selector selector) {
         try{
             return findElement(selector);
         }catch (ElementNotFoundException e){
@@ -144,7 +145,7 @@ public class AppiumElementImpl implements Element {
     }
 
     @Override
-    public List<Element> findElements(Selector selector) {
+    public List<Element> findElements(@NonNull Selector selector) {
         return webElement.findElements(AppiumDriverImpl.bySelector(selector))
                 .stream()
                 .map((e) -> new AppiumElementImpl(driver, e))

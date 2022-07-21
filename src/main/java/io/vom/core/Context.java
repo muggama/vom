@@ -3,6 +3,7 @@ package io.vom.core;
 import io.vom.utils.ReflectionUtils;
 import io.vom.utils.Selector;
 import io.vom.utils.SelectorUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +26,7 @@ public class Context {
         return driver;
     }
 
-    public <T extends View<T>> T loadView(Class<T> viewClass) {
+    public <T extends View<T>> T loadView(@NonNull Class<T> viewClass) {
         try {
             return ReflectionUtils.createPageObject(this, viewClass);
         } catch (Exception e) {
@@ -44,7 +45,7 @@ public class Context {
 
         private Driver driver;
 
-        public ContextBuilder setDriver(Driver driver) {
+        public ContextBuilder setDriver(@NonNull Driver driver) {
             this.driver = driver;
 
             return this;
