@@ -15,5 +15,10 @@
             <value>//*[@text='${text}']</value>
             <type>xpath</type>
         </selector>
+        <selector>
+            <name>not_empty_text</name>
+            <value>//*[string-length(@text) > 0]</value>
+            <type>xpath</type>
+        </selector>
     </platform>
 </repository>

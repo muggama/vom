@@ -28,11 +28,9 @@ public class ViewTest {
 
         context.loadView(LoginView.class)
                 .login()
+                .job((it) -> System.out.println(it.getLocale()))
                 .clickButton()
-                .scrollDownToEnd()
-                .scrollUpToStart()
-                .scrollDownToEnd()
-                .scrollUpToStart();
+                .job((it) -> System.out.println(it.getLocale()));
 
     }
 }

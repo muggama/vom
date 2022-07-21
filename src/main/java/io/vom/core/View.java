@@ -69,7 +69,7 @@ public class View<T extends View<T>> implements Searchable {
     }
 
     public Locale getLocale() {
-        return null;
+        return driver.getLocale();
     }
 
     @Override

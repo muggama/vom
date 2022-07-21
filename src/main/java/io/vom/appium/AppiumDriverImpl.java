@@ -10,8 +10,8 @@ import io.vom.core.Element;
 import io.vom.exceptions.ElementNotFoundException;
 import io.vom.exceptions.InfinityLoopException;
 import io.vom.exceptions.PlatformNotFoundException;
-import io.vom.utils.*;
 import io.vom.utils.Properties;
+import io.vom.utils.*;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -431,5 +431,16 @@ public class AppiumDriverImpl implements Driver {
     @Override
     public void close() {
         appiumDriver.close();
+    }
+
+    @Override
+    public Locale getLocale() {
+        Selector texts = context.getCommonSelector("not_empty_text");
+        var l = findElements(texts)
+                .stream()
+                .map(Element::getText)
+                .collect(Collectors.toList());
+
+        return VomUtils.getLocale(l);
     }
 }

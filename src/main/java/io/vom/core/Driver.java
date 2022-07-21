@@ -5,6 +5,7 @@ import io.vom.utils.Selector;
 import io.vom.utils.Size;
 
 import java.time.Duration;
+import java.util.Locale;
 
 public interface Driver extends Searchable {
     void prepare(Context context);
@@ -86,4 +87,6 @@ public interface Driver extends Searchable {
     void quit();
 
     void close();
+
+    Locale getLocale();
 }
