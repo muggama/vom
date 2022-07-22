@@ -6,7 +6,7 @@
             <type>id</type>
         </selector>
         <selector>
-            <name>test</name>
+            <name>common_text</name>
             <value>android.widget.TextView</value>
             <type>class_name</type>
         </selector>
