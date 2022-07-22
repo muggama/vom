@@ -8,12 +8,12 @@ import io.vom.utils.Point;
 import io.vom.utils.Properties;
 import io.vom.utils.Size;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class AppiumElementImpl implements Element {
