@@ -6,6 +6,11 @@
             <type>id</type>
         </selector>
         <selector>
+            <name>test</name>
+            <value>android.widget.TextView</value>
+            <type>class_name</type>
+        </selector>
+        <selector>
             <name>scroll_container</name>
             <value>(//*[(@class='android.widget.ListView') or (@class='android.widget.ScrollView')])[1]</value>
             <type>xpath</type>
