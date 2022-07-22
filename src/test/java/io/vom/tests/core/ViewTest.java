@@ -28,7 +28,9 @@ public class ViewTest {
 
         context.loadView(LoginView.class)
                 .login()
+                .delay(1)
                 .clickButton()
+                .delay(1)
                 .job((it) -> System.out.println(it.collect()))
                 .scrollUpToStart();
 
