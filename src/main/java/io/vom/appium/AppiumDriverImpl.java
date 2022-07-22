@@ -51,6 +51,10 @@ public class AppiumDriverImpl implements Driver {
         appiumDriver = new AppiumDriver(remoteAddress, desiredCapabilities);
     }
 
+    public AppiumDriver getAppiumDriver(){
+        return appiumDriver;
+    }
+
     public AppiumDriverImpl() {
         var prop = Properties.getInstance();
 
