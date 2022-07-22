@@ -4,6 +4,7 @@ import com.beust.jcommander.internal.Lists;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public interface Collectable<E extends ElementSupplier> {
@@ -20,7 +21,30 @@ public interface Collectable<E extends ElementSupplier> {
         return ScrollDirection.DOWN;
     }
 
-    default E getAnyItem() {
+    default E find(Predicate<E> predicate) {
+        var pre = getViewList();
+        do {
+            var opt = pre.stream().filter(predicate).findFirst();
+
+            if (opt.isPresent()) {
+                return opt.get();
+            }
+
+            VomUtils.scroll(pre.stream().map(ElementSupplier::getElement).collect(Collectors.toList())
+                    , getScrollDirection()
+                    , getScrollDuration()
+                    , getScrollLength());
+
+            var post = getViewList();
+            if (!pre.equals(post)){
+                pre = post;
+            }else {
+                return null;
+            }
+        } while (true);
+    }
+
+    default E find() {
         return CollectionUtils.getAny(getViewList());
     }
 
