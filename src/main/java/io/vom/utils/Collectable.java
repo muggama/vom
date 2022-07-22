@@ -21,7 +21,7 @@ public interface Collectable<E extends ElementSupplier> {
         return ScrollDirection.DOWN;
     }
 
-    default E find(Predicate<E> predicate) {
+    default E findAny(Predicate<E> predicate) {
         var pre = getViewList();
         do {
             var opt = pre.stream().filter(predicate).findFirst();
@@ -44,7 +44,7 @@ public interface Collectable<E extends ElementSupplier> {
         } while (true);
     }
 
-    default E find() {
+    default E findAny() {
         return CollectionUtils.getAny(getViewList());
     }
 
