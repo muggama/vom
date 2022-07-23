@@ -13,6 +13,11 @@ public class Context {
 
     private Map<String, Selector> commonSelectors;
 
+    public Context(Driver driver){
+        this.driver = driver;
+        this.driver.prepare(this);
+    }
+
 
     public Selector getCommonSelector(String name) {
         if (commonSelectors == null) {
@@ -34,15 +39,11 @@ public class Context {
         }
     }
 
-
     public static SimpleContextBuilder getBuilder() {
         return new SimpleContextBuilder();
     }
 
     public static class SimpleContextBuilder implements ContextBuilder<SimpleContextBuilder, Context> {
-
-        private final Context context = new Context();
-
         private Driver driver;
 
         @Override
@@ -54,10 +55,7 @@ public class Context {
 
         @Override
         public Context build() {
-            context.driver = driver;
-            driver.prepare(context);
-
-            return context;
+            return new Context(driver);
         }
     }
 }
