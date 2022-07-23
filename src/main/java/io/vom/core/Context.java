@@ -1,12 +1,12 @@
 package io.vom.core;
 
+import io.vom.utils.ContextBuilder;
 import io.vom.utils.ReflectionUtils;
 import io.vom.utils.Selector;
 import io.vom.utils.SelectorUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class Context {
     protected Driver driver;
@@ -35,24 +35,25 @@ public class Context {
     }
 
 
-    public static ContextBuilder getBuilder() {
-        return new ContextBuilder();
+    public static SimpleContextBuilder getBuilder() {
+        return new SimpleContextBuilder();
     }
 
-    public static class ContextBuilder {
+    public static class SimpleContextBuilder implements ContextBuilder<SimpleContextBuilder, Context> {
 
         private final Context context = new Context();
 
         private Driver driver;
 
-        public ContextBuilder setDriver(@NonNull Driver driver) {
+        @Override
+        public SimpleContextBuilder setDriver(@NonNull Driver driver) {
             this.driver = driver;
 
             return this;
         }
 
+        @Override
         public Context build() {
-            Objects.requireNonNull(driver, "Driver is null, you should set Driver to start project");
             context.driver = driver;
             driver.prepare(context);
 
