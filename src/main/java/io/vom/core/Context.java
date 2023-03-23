@@ -9,6 +9,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Map;
 
 public class Context {
+
+    LoadSelectorListener loadSelectorListener;
     protected Driver driver;
 
     private Map<String, Selector> commonSelectors;
@@ -18,6 +20,13 @@ public class Context {
         this.driver.prepare(this);
     }
 
+    public void setSelectorListener(LoadSelectorListener loadSelectorListener){
+        this.loadSelectorListener = loadSelectorListener;
+    }
+
+    public LoadSelectorListener getSelectorListener(){
+        return loadSelectorListener;
+    }
 
     public Selector getCommonSelector(String name) {
         if (commonSelectors == null) {

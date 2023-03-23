@@ -89,4 +89,8 @@ public interface Driver extends Searchable {
     void close();
 
     Locale getLocale();
+
+    Object getCenterColor(Selector selector);
+
+    Object getCenterColor(Point point);
 }

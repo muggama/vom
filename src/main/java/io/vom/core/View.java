@@ -64,7 +64,6 @@ public class View<T extends View<T>> implements Searchable {
         return context.loadView(vClass);
     }
 
-
     public Context getContext() {
         return context;
     }
@@ -79,8 +78,18 @@ public class View<T extends View<T>> implements Searchable {
     }
 
     @Override
+    public Element findElement(Selector selector, Duration waitUntil) {
+        return context.getDriver().findElement(selector, waitUntil);
+    }
+
+    @Override
     public Element findNullableElement(Selector selector) {
         return context.getDriver().findNullableElement(selector);
+    }
+
+    @Override
+    public Element findNullableElement(Selector selector, Duration duration) {
+        return getContext().getDriver().findNullableElement(selector, duration);
     }
 
     @Override
@@ -93,7 +102,6 @@ public class View<T extends View<T>> implements Searchable {
 
         return _self;
     }
-
 
     public T scrollDown(Duration duration, int length) {
         driver.scrollDown(duration, length);
@@ -111,6 +119,14 @@ public class View<T extends View<T>> implements Searchable {
         return driver.takeScreenshot();
     }
 
+    public Object getCenterRGBColor(Selector selector) {
+        return driver.getCenterColor(selector);
+    }
+
+    public Object getCenterRGBColor(Point point) {
+        return driver.getCenterColor(point);
+    }
+
     public void close() {
         driver.close();
     }
@@ -124,19 +140,17 @@ public class View<T extends View<T>> implements Searchable {
         return getContext().loadView(klass);
     }
 
-    public View<?> back(){
+    public View<?> back() {
         driver.back();
 
         return _self;
     }
-
 
     public T scrollDownTo(String text, Duration duration, int length) {
         driver.scrollDownTo(text, duration, length);
 
         return _self;
     }
-
 
     public T scrollUp() {
         driver.scrollUp();
@@ -197,7 +211,6 @@ public class View<T extends View<T>> implements Searchable {
         return _self;
     }
 
-
     public T scrollRight() {
         driver.scrollRight();
 
@@ -240,7 +253,7 @@ public class View<T extends View<T>> implements Searchable {
         return _self;
     }
 
-    public T ScrollRightToEnd() {
+    public T scrollRightToEnd() {
         driver.scrollRightToEnd();
 
         return _self;

@@ -34,4 +34,8 @@ public interface Element extends Searchable {
     Point getCenterPoint();
 
     byte[] takeScreenshot();
+
+    Object getCenterRGBColor();
+
+    Object getAverageColor();
 }
