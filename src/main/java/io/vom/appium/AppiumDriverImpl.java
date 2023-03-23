@@ -4,24 +4,29 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.vom.core.Context;
 import io.vom.core.Driver;
 import io.vom.core.Element;
 import io.vom.exceptions.ElementNotFoundException;
 import io.vom.exceptions.InfinityLoopException;
 import io.vom.exceptions.PlatformNotFoundException;
+import io.vom.utils.Point;
 import io.vom.utils.Properties;
 import io.vom.utils.*;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.OutputType;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.time.Duration;
@@ -31,12 +36,14 @@ import java.util.stream.Collectors;
 import static io.vom.utils.Properties.DEFAULT_SCROLL_DURATION;
 import static io.vom.utils.Properties.DEFAULT_SCROLL_LENGTH;
 
+
 public class AppiumDriverImpl implements Driver {
 
     AppiumDriver appiumDriver;
     private Context context;
-
     private Selector scrollContainer;
+    public static URL url;
+    public static DesiredCapabilities caps;
 
     @Override
     public void prepare(Context context) {
@@ -51,7 +58,7 @@ public class AppiumDriverImpl implements Driver {
         appiumDriver = new AppiumDriver(remoteAddress, desiredCapabilities);
     }
 
-    public AppiumDriver getAppiumDriver(){
+    public AppiumDriver getAppiumDriver() {
         return appiumDriver;
     }
 
@@ -59,7 +66,7 @@ public class AppiumDriverImpl implements Driver {
         var prop = Properties.getInstance();
 
         try {
-            var url = new URL(prop.getProperty("appium_url"));
+            url = new URL(prop.getProperty("appium_url"));
             var reader = new FileReader(FileUtils.getFullPath(prop.getProperty("appium_caps_json_file")));
 
             Gson gson = new Gson();
@@ -75,32 +82,71 @@ public class AppiumDriverImpl implements Driver {
                     .findAny()
                     .orElseThrow(() -> new PlatformNotFoundException("Platform: '" + platform + "' was not found on appium json file"));
 
-            var caps = new DesiredCapabilities(map);
-            appiumDriver = new AppiumDriver(url, caps);
+            caps = new DesiredCapabilities(map);
+
+            if (platform.equals("android")) {
+                appiumDriver = new AndroidDriver(url, caps);
+
+            } else if (platform.equals("ios")) {
+                appiumDriver = new IOSDriver(url, caps);
+            } else {
+                appiumDriver = new AppiumDriver(url, caps);
+            }
+            Duration implicitlyDuration = Duration.ofSeconds(Long.parseLong(prop.getProperty("implicitly_wait_time_in_seconds", "0")));
+            appiumDriver.manage().timeouts().implicitlyWait(implicitlyDuration);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static Element findElement(AppiumDriverImpl driver, SearchContext searchContext, Selector selector) {
+        Duration waitUntil = Duration.ofSeconds(Integer.parseInt(Properties.getInstance().getProperty("explicitly_wait_time_in_seconds", "0")));
+        return findElement(driver, searchContext, selector, waitUntil);
+    }
+
+    public static Element findElement(AppiumDriverImpl driver, SearchContext searchContext, Selector selector, Duration waitUntil) {
+        return DriverUtil.waitUntil(waitUntil, () -> {
+            try {
+                var ae = searchContext.findElement(bySelector(selector));
+
+                return new AppiumElementImpl(driver, ae);
+            } catch (NoSuchElementException e) {
+                var exception = new ElementNotFoundException("Element was not found by this selector:" +
+                        " name='" + selector.getName() + "' type='" + selector.getType() + "' value='" + selector.getValue() + "'");
+                exception.addSuppressed(e);
+
+                throw exception;
+            }
+        });
+    }
+
+    public static List<Element> findElements(AppiumDriverImpl driver, SearchContext searchContext, Selector selector) {
+        return searchContext.findElements(bySelector(selector))
+                .stream()
+                .map((e) -> new AppiumElementImpl(driver, e))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Element findElement(Selector selector) {
-        try {
-            var ae = appiumDriver.findElement(bySelector(selector));
+        return findElement(this, appiumDriver, selector);
+    }
 
-            return new AppiumElementImpl(this, ae);
-        } catch (NoSuchElementException e) {
-            var exception = new ElementNotFoundException("Element was not found by this selector:" +
-                    " name='" + selector.getName() + "' type='" + selector.getType() + "' value='" + selector.getValue() + "'");
-            exception.addSuppressed(e);
 
-            throw exception;
-        }
+    @Override
+    public Element findElement(Selector selector, Duration waitUntil) {
+        return findElement(this, appiumDriver, selector, waitUntil);
     }
 
     @Override
     public Element findNullableElement(Selector selector) {
+        return findNullableElement(selector, Duration.ZERO);
+    }
+
+    @Override
+    public Element findNullableElement(Selector selector, Duration duration) {
         try {
-            return findElement(selector);
+            return findElement(selector, duration);
         } catch (ElementNotFoundException e) {
             return null;
         }
@@ -108,10 +154,7 @@ public class AppiumDriverImpl implements Driver {
 
     @Override
     public List<Element> findElements(Selector selector) {
-        return appiumDriver.findElements(bySelector(selector))
-                .stream()
-                .map((e) -> new AppiumElementImpl(this, e))
-                .collect(Collectors.toList());
+        return findElements(this, appiumDriver, selector);
     }
 
     static By bySelector(Selector selector) {
@@ -344,11 +387,14 @@ public class AppiumDriverImpl implements Driver {
 
     private void scrollToEdge(Runnable runnable) {
         byte[] screenshot;
-
-        do {
-            screenshot = findElement(scrollContainer).takeScreenshot();
-            runnable.run();
-        } while (!Arrays.equals(screenshot, findElement(scrollContainer).takeScreenshot()));
+        try {
+            do {
+                screenshot = findElement(scrollContainer).takeScreenshot();
+                runnable.run();
+            } while (!Arrays.equals(screenshot, findElement(scrollContainer).takeScreenshot()));
+        } catch (StaleElementReferenceException ignore) {
+            scrollToEdge(runnable);
+        }
     }
 
     @Override
@@ -374,6 +420,42 @@ public class AppiumDriverImpl implements Driver {
     }
 
     @Override
+    public Object getCenterColor(Selector selector) {
+        Element element = findElement(selector);
+        Point point = element.getCenterPoint();
+        return getColor(point);
+    }
+
+    @Override
+    public Object getCenterColor(Point point) {
+        return getColor(point);
+    }
+
+    public Object getColor(Point point) {
+
+        int centerX = point.getX();
+        int centerY = point.getY();
+        File scrFile = getAppiumDriver().getScreenshotAs(OutputType.FILE);
+
+        BufferedImage image;
+        try {
+            image = ImageIO.read(scrFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        int clr = image.getRGB(centerX, centerY);
+        int red = (clr & 0x00ff0000) >> 16;
+        int green = (clr & 0x0000ff00) >> 8;
+        int blue = clr & 0x000000ff;
+
+        return String.join(
+                ",",
+                String.valueOf(red),
+                String.valueOf(green),
+                String.valueOf(blue));
+    }
+
+    @Override
     public void back() {
         appiumDriver.navigate().back();
     }
@@ -391,11 +473,15 @@ public class AppiumDriverImpl implements Driver {
     @Override
     public Locale getLocale() {
         Selector texts = context.getCommonSelector("not_empty_text");
-        var l = findElements(texts)
-                .stream()
-                .map(Element::getText)
-                .collect(Collectors.toList());
+        try {
+            var l = findElements(texts)
+                    .stream()
+                    .map(Element::getText)
+                    .collect(Collectors.toList());
 
-        return VomUtils.getLocale(l);
+            return VomUtils.getLocale(l);
+        } catch (StaleElementReferenceException ignore) {
+            return getLocale();
+        }
     }
 }
