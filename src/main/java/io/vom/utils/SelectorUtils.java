@@ -117,7 +117,10 @@ public class SelectorUtils {
                                 , element.getChild("type").getText()
                                 , element.getChild("value").getText()
                                 , context.getDriver().getPlatform());
-
+                        var listener = context.getSelectorListener();
+                        if (listener != null){
+                            selector = listener.onSelectorLoad(selector);
+                        }
                         map.put(selector.getName(), selector);
                     });
             return map;

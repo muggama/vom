@@ -6,7 +6,7 @@ import com.github.pemistahl.lingua.api.LanguageDetector;
 import com.github.pemistahl.lingua.api.LanguageDetectorBuilder;
 import io.vom.core.Driver;
 import io.vom.core.Element;
-import org.apache.commons.lang.math.RandomUtils;
+import org.openqa.selenium.StaleElementReferenceException;
 
 import java.time.Duration;
 import java.util.*;
@@ -17,9 +17,13 @@ public class VomUtils {
 
 
     public static void scroll(Driver driver, ScrollDirection direction, Duration duration, int length, Selector scrollContainer) {
-        var elements = Objects.requireNonNull(driver.findElement(scrollContainer).findElements(Selector.from("xpath", "./*"))
-                , "it seems that the given view is not scrollable or selector 'scroll_container' does not works in this case");
-
+        List<Element> elements = null;
+        try {
+            elements = driver.findElement(scrollContainer).findElements(Selector.from("xpath", "./*"));
+        } catch (StaleElementReferenceException ignore) {
+            scroll(driver, direction, duration, length, scrollContainer);
+        }
+        Objects.requireNonNull(elements, "it seems that the given view is not scrollable or selector 'scroll_container' does not works in this case");
         scroll(elements, direction, duration, length);
     }
 
@@ -67,6 +71,7 @@ public class VomUtils {
                         .move(-length, 0);
                 break;
         }
+//        System.out.println("startPoint: " + startPoint + ", " + "endPoint: " + endPoint);
 
         return new Direction(startPoint.clone(), endPoint);
     }
