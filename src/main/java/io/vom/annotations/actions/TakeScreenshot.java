@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface GetText {
+public @interface TakeScreenshot {
     int waitUntil() default -1;
 
     Class<?> returnType() default Void.class;
