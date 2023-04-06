@@ -262,9 +262,37 @@ public class AppiumDriverImpl implements Driver {
         scrollTo(text, () -> scrollDown(duration, length, scrollContainer));
     }
 
+    @Override
+    public void scrollDownTo(Selector selector) {
+        scrollDownTo(selector, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
+    }
+
+    @Override
+    public void scrollDownTo(Selector selector, Duration duration, int length) {
+        scrollDownTo(selector, duration, length, scrollContainer);
+    }
+
+    @Override
+    public void scrollDownTo(Selector selector, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(selector, () -> scrollDown(duration, length, scrollContainer));
+    }
+
     private void scrollTo(String text, Runnable runnable) {
         var limit = 50;
         while (!isPresentText(text)) {
+
+            runnable.run();
+
+            limit--;
+            if (limit == 0) {
+                throw new InfinityLoopException("infinite scrolling, max scroll limit is 50");
+            }
+        }
+    }
+
+    private void scrollTo(Selector selector, Runnable runnable) {
+        var limit = 50;
+        while (findNullableElement(selector) == null) {
 
             runnable.run();
 
@@ -296,6 +324,11 @@ public class AppiumDriverImpl implements Driver {
     }
 
     @Override
+    public void scrollUpTo(Selector selector) {
+        scrollUpTo(selector, DEFAULT_SCROLL_DURATION, DEFAULT_SCROLL_LENGTH);
+    }
+
+    @Override
     public void scrollUpTo(String text, Duration duration, int length) {
         scrollUpTo(text, duration, length, scrollContainer);
     }
@@ -303,6 +336,16 @@ public class AppiumDriverImpl implements Driver {
     @Override
     public void scrollUpTo(String text, Duration duration, int length, Selector scrollContainer) {
         scrollTo(text, () -> scrollUp(duration, length, scrollContainer));
+    }
+
+    @Override
+    public void scrollUpTo(Selector selector, Duration duration, int length) {
+        scrollUpTo(selector, duration, length, scrollContainer);
+    }
+
+    @Override
+    public void scrollUpTo(Selector selector, Duration duration, int length, Selector scrollContainer) {
+        scrollTo(selector, () -> scrollUp(duration, length, scrollContainer));
     }
 
     @Override

@@ -71,7 +71,6 @@ public class VomUtils {
                         .move(-length, 0);
                 break;
         }
-//        System.out.println("startPoint: " + startPoint + ", " + "endPoint: " + endPoint);
 
         return new Direction(startPoint.clone(), endPoint);
     }
